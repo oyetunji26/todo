@@ -1,7 +1,7 @@
 // lib/getCurrentUser.ts
 
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import User from "@/models/user"; // Mongoose User model
 import { connectToDb } from "@/utils/database"; // your MongoDB connection function
 

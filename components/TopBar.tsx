@@ -49,7 +49,7 @@ const TopBar = () => {
 
         <div className="flex relative">
           <img
-            src={session?.user?.image}
+            src={session?.user?.image || "/img/user.jpg"}
             className="size-9 ml-2.5 rounded-full object-cover transition-transform duration-300 hover:scale-105 "
             onClick={() => setToggleDropDown((prev: any) => !prev)}
           />
