@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Thin scrollbar */
+::-webkit-scrollbar {
+  width: 4px; /* Adjust to your desired thinness */
+  height: 4px; /* for horizontal scroll */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2); /* color of the scroll thumb */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  @apply bg-[#000]
+}
+
+.section {
+  @apply p-4 md:p-5
+}
+
+.text-theme {
+  color: #1c1d22;
+}
+
+.dark .text-theme {
+  color: #ffffff;
+}
+
+.text-theme-inactive {
+  color: rgba(28, 29, 34, 0.5); /* 50% #1c1d22 */
+}
+
+.dark .text-theme-inactive {
+  color: rgba(255, 255, 255, 0.5); /* 50% #ffffff */
+}
+
+.border-theme {
+  border-color: rgba(28, 29, 34, 0.1); /* light mode: #1c1d22 at 10% */
+  /* box-shadow: 40px 180px 80px 0px #1C1D220F; */
+}
+
+
+.dark .border-theme {
+  border-color: rgba(255, 255, 255, 0.1); /* dark mode: #ffffff at 10% */
+}
+
+.bg-theme {
+  background-color: rgba(28, 29, 34, 0.08);
+}
+
+.dark .bg-theme {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.flex-center {
+  @apply flex items-center justify-center
+}
+
+.flex-between {
+  @apply flex items-center justify-between
+}
+
+.scroll-container {
+  overflow: scroll; /* Keeps scrolling functionality */
+  scrollbar-width: none; /* For Firefox */
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none; /* For Webkit browsers like Chrome and Safari */
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
