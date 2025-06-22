@@ -7,7 +7,7 @@ import Image from "next/image";
 import DropDown from "../Ui/DropDown";
 import AddBtn from "../Ui/AddBtn";
 import Modal from "../Modal";
-import CreateProjectForm from "./create";
+import CreateProjectForm from "./CreateProject";
 
 type DropdownItem = {
   title: string;

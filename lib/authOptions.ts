@@ -23,7 +23,6 @@ export const authOptions : AuthOptions = {
   
         if (!existingUser) {
           await User.create({
-            googleId: user?.id,
             name: user.name,
             email: user.email,
             image: user.image,

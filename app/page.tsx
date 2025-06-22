@@ -20,7 +20,8 @@ export default function Home() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/login"); // or signIn() to show next-auth page
+      router.push("/login"); 
+      // or signIn() to show next-auth page
     }
 
     getCurrentUser();

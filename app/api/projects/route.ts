@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import  { connectToDb } from "@/utils/database"; // your custom DB connection util
-import Project from "@/models/project";
+import Project from "@/models/project.model";
 
 // Only POST is handled here
 export async function POST(req: Request) {

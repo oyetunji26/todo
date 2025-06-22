@@ -3,6 +3,7 @@
 "use client";
 
 import React from "react";
+import { FiX } from "react-icons/fi";
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-theme/90 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-theme/70 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
@@ -23,10 +24,11 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
       >
         <button
-          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl"
+          className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 text-2xl"
           onClick={onClose}
         >
-          &times;
+          {/* &times; */}
+          <FiX size={22} className="text-theme" />
         </button>
         {children}
       </div>

@@ -2,13 +2,13 @@
 
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { FiX } from "react-icons/fi";
 
 interface CreateProjectFormProps {
   userId?: string; // pass current logged-in user's ID
   teamId?: string | null; // optional team ID if available
   onSuccess?: () => void;
 }
-
 
 
 export default function CreateProjectForm({ teamId = null, onSuccess }: CreateProjectFormProps) {
@@ -31,7 +31,7 @@ export default function CreateProjectForm({ teamId = null, onSuccess }: CreatePr
         body: JSON.stringify({
           title,
           description,
-          owner: session?.user?.email,
+          owner: session?.user?.email || "oyetunjie5@gmail.com",
           team: teamId,
         }),
       });
@@ -52,13 +52,13 @@ export default function CreateProjectForm({ teamId = null, onSuccess }: CreatePr
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded-xl shadow max-w-md w-full">
-      <h2 className="text-lg font-semibold">Create New Project</h2>
+    <form onSubmit={handleSubmit} className="space-y-3 py-4 px-3 rounded-xl  max-w-md w-full">
+      <h2 className="text-lg font-semibold text-theme">Create New Project</h2>
 
       <input
         type="text"
         placeholder="Project Title"
-        className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring"
+        className="w-full border border-theme rounded-lg p-2.5 focus:outline-none focus:ring"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
@@ -66,7 +66,7 @@ export default function CreateProjectForm({ teamId = null, onSuccess }: CreatePr
 
       <textarea
         placeholder="Project Description"
-        className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring"
+        className="w-full border border-theme rounded-lg p-2.5 focus:outline-none focus:ring"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
@@ -74,7 +74,7 @@ export default function CreateProjectForm({ teamId = null, onSuccess }: CreatePr
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 text-white rounded-lg p-3 hover:bg-blue-700 disabled:opacity-50"
+        className="w-full bg-blue-600 text-white rounded-lg p-2.5 hover:bg-blue-700 disabled:opacity-50"
       >
         {loading ? "Creating..." : "Create Project"}
       </button>

@@ -10,7 +10,7 @@ const ProjectSchema = new Schema({
   // Optional team (null means personal project)
   team: { type: Schema.Types.ObjectId, ref: 'Team', default: null },
 
-  tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
+  tasks: [{ type: Schema.Types.ObjectId, ref: 'Task'}],
 }, { timestamps: true });
 
 export default models.Project || model('Project', ProjectSchema);

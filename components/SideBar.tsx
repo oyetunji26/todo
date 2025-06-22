@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 
 const SideBar = () => {
   const icons: string[] = [
@@ -25,7 +26,13 @@ const SideBar = () => {
             className="object-scale-down"
             alt="logo"
           />
-          <Image src={"/img/Logo.png"} width={28} height={27} className="mt-4 object-scale-down" alt="logo" />
+          <Image
+            src={"/img/Logo.png"}
+            width={28}
+            height={27}
+            className="mt-4 object-scale-down"
+            alt="logo"
+          />
         </div>
         <div className="flex flex-col gap-4">
           {icons?.map((item: any, i: number) => (
@@ -52,7 +59,8 @@ const SideBar = () => {
       </div>
 
       <button
-        className={` hover:bg-[#333438] rounded-full grid place-items-center p-3`}
+        className={` hover:bg-[#333438] rounded-full grid place-items-center p-3 z-[99999]`}
+        onClick={() => signOut()}
       >
         <Image
           src={"/img/sign-out.png"}
