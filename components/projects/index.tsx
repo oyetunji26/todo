@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import ThemeToggle from "./ThemeToggle";
 import { FaPlus } from "react-icons/fa6";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import DropDown from "../Ui/DropDown";
 import AddBtn from "../Ui/AddBtn";
 import Modal from "../Modal";
 import CreateProjectForm from "./CreateProject";
+import { useUserProjects } from "@/hooks/useUserProjects";
 
 type DropdownItem = {
   title: string;
@@ -17,6 +18,14 @@ type DropdownItem = {
 
 const Projects = () => {
   const [open, setOpen] = useState(false);
+  const { data: projects, isLoading, error } = useUserProjects();
+
+  useEffect(() => {
+
+    console.log("projects", projects)
+  }, [projects])
+
+
   const dropdownData: DropdownItem[] = [
     {
       title: "Team",
@@ -63,6 +72,10 @@ const Projects = () => {
           </Modal>
         </div>
 
+        <p className="text-theme">
+          {/* {projects[0]?.title} t */}
+        </p>
+
         <div className=" overflow-y-scroll max-h-[80vh]">
           {dropdownData.map((item: DropdownItem, i: number) => (
             <DropDown
@@ -71,6 +84,15 @@ const Projects = () => {
               options={item?.options}
               opened={item?.opened}
             />
+          ))}
+
+          {projects?.map((items: any, i: number) => (
+            <DropDown
+              key={i}
+              title="Projects"
+              options={projects}
+              opened={false}
+             />
           ))}
         </div>
       </div>

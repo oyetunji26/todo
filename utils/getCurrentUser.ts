@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
-import User from "@/models/user"; // Mongoose User model
+import User from "@/models/User"; // Mongoose User model
 import { connectToDb } from "@/utils/database"; // your MongoDB connection function
 
 export async function getCurrentUser() {

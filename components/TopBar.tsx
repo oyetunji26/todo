@@ -3,27 +3,19 @@
 import getFormattedDate from "@/utils/formattedDate";
 import React, { useEffect, useState } from "react";
 import { FiSearch, FiBell, FiCalendar } from "react-icons/fi";
-import Image from "next/image";
-import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Link from "next/link";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const TopBar = () => {
-  const { data: session } = useSession();
-  const [providers, setProviders] = useState<any | null>(null);
-  useEffect(() => {
-    const setUpProviders = async () => {
-      const response = await getProviders();
-      setProviders(response);
-    };
+  const { user, logout} = useAuthStore();
 
-    setUpProviders();
-  }, []);
-  console.log("Session prof", session);
+  console.log("Session profile", user);
   const [toggleDropDown, setToggleDropDown] = useState(false);
   return (
     <div className="flex items-center justify-between text-theme">
       <h2 className="font-bold !text-[20px]">
-        Welcome back, {session?.user?.name?.split(" ")[0]} 👋
+        Welcome back, {user?.name?.split(" ")[0]} 👋
       </h2>
 
       <div className="flex gap-4 items-center">
@@ -49,7 +41,7 @@ const TopBar = () => {
 
         <div className="flex relative">
           <img
-            src={session?.user?.image || "/img/user.jpg"}
+            src={user?.image || "/img/user.jpg"}
             className="size-9 ml-2.5 rounded-full object-cover transition-transform duration-300 hover:scale-105 "
             onClick={() => setToggleDropDown((prev: any) => !prev)}
           />
@@ -83,7 +75,7 @@ const TopBar = () => {
                 className="mt-5 w-full black_btn"
                 onClick={() => {
                   setToggleDropDown(false);
-                  signOut();
+                  logout();
                 }}
               >
                 Sign Out

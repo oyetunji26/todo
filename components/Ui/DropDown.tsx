@@ -45,7 +45,7 @@ const DropDown = ({ title, options, opened = false, disabled = false } : Dropdow
                     : "text-theme-inactive"
                 }`}
               >
-                {item}
+                {item?.title}
               </button>
             </div>
           ))}

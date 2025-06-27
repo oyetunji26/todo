@@ -1,87 +1,94 @@
-import { AuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { connectToDb } from "@/utils/database";
-import User from "@/models/user";
+// lib/authOptions.ts
+import { AuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { connectToDb } from '@/utils/database';
+import User from '@/models/User';
 
-export const authOptions : AuthOptions = {
-    providers: [
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      }),
-    ],
-    callbacks: {
-      async signIn({ user, account, profile } ) {
-  
+export const authOptions: AuthOptions = {
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
         await connectToDb();
-  
-        console.log('USER:', user);
-        console.log('ACCOUNT:', account);
-        console.log('PROFILE:', profile);
-  
+
+        const { email, password } = credentials ?? {};
+        if (!email || !password) return null;
+
+        const user = await User.findOne({ email });
+        if (!user || !user.password) return null;
+
+        const isMatch = await user.matchPassword(password);
+        if (!isMatch) return null;
+
+        return {
+          id: user?._id.toString(),
+          name: user.name,
+          email: user.email,
+          image: user.image,
+        };
+      },
+    }),
+  ],
+
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      await connectToDb();
+
+      // Only run for Google logins
+      if (account?.provider === 'google') {
         const existingUser = await User.findOne({ email: user.email });
-  
+
         if (!existingUser) {
           await User.create({
+            googleId: profile?.sub,
             name: user.name,
             email: user.email,
             image: user.image,
+            teams: [],
           });
-  
-  
         }
-  
-        return true;
-      },
-  
-      // signIn({ user, account, profile }) {
-  
-  
-      //   await connectToDb();
-  
-      //   const googleId = profile?.sub;
-      //   if (!googleId || !user.email) return false;
-  
-      //   const existingUser = await User.findOne({ email: user.email });
-  
-      //   if (!existingUser) {
-      //     await User.create({
-      //       googleId,
-      //       name: user.name,
-      //       email: user.email,
-      //       image: user.image,
-      //     });
-      //   }
-  
-      //   return true;
-      // },
-  
-      async session({ session } ) {
-        await connectToDb();
-  
-        const userInDb = await User.findOne({ email: session.user?.email });
-  
-        if (userInDb) {
-          // session?.user?.id = userInDb._id.toString();
-          // session.user.googleId = userInDb.googleId;
-          // session.user.name = userInDb.name;
-          // session?.user?.image = userInDb.image;
-  
-          console.log(session)
-        }
-  
-        if (session) {
-          
-        }
-  
-        return session;
-      },
-  
-      async redirect({ url, baseUrl } ) {
-        return baseUrl; // redirect to home ("/") after login
-      },
+      }
+
+      return true;
     },
-  
-    secret: process.env.NEXTAUTH_SECRET,
-  };
-  
+
+    async session({ session }) {
+      await connectToDb();
+
+      const userInDb = await User.findOne({ email: session.user?.email });
+      if (userInDb) {
+        session.user.id = userInDb._id.toString();
+        session.user.googleId = userInDb.googleId;
+        session.user.name = userInDb.name;
+        session.user.image = userInDb.image;
+      }
+
+      return session;
+    },
+
+    async jwt({ token, user }) {
+      if (user) token.id = user.id;
+      return token;
+    },
+
+    async redirect({ baseUrl }) {
+      return baseUrl;
+    },
+  },
+
+  session: {
+    strategy: 'jwt',
+  },
+
+  secret: process.env.NEXTAUTH_SECRET,
+};

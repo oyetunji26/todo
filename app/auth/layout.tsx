@@ -1,7 +1,7 @@
 // app/login/layout.tsx
 
 export const metadata = {
-  title: "Login",
+  title: "auth",
 };
 
 export default function LoginLayout({

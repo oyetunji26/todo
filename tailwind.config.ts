@@ -9,6 +9,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+      },
       colors: {
         // Primary colors for a Web3 black-and-white accent
         black: "#0D0D0D",
