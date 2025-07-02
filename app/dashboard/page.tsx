@@ -11,11 +11,56 @@ import ProgressBar from "@/components/Ui/ProgressBar";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SideBar from "@/components/SideBar";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useAuthStore, useProjectStore } from "@/store";
 import Loader from "@/components/Ui/Loader";
+import ProjectList from "@/components/projects/ProjectList";
+import { useTasks } from "@/hooks/useTasks";
+import { useTaskFilterStore } from "@/store/useTaskFilterStore";
 
 export default function Home() {
   const { user, isLoggedIn } = useAuthStore();
+  const { projects, activeProject, setActiveProject } = useProjectStore();
+  const {
+    data: tasks,
+    isLoading,
+    isSuccess,
+  } = useTasks({ project: activeProject?._id || "" });
+
+  const { selectedFilter } = useTaskFilterStore();
+
+  // const [selectedFilter, setSelectedFilter] = useState<
+  //   "all" | "todo" | "in_progress" | "done"
+  // >("all");
+
+  const todoTasks = tasks?.filter((task) => task?.status === "todo");
+  const inProgressTasks = tasks?.filter(
+    (task) => task?.status === "in_progress"
+  );
+  const doneTasks = tasks?.filter((task) => task?.status === "done");
+
+  const getFilteredTasks = () => {
+    if (selectedFilter === "todo")
+      return [{ name: `To do (${todoTasks?.length})`, item: todoTasks }];
+    if (selectedFilter === "in_progress")
+      return [
+        {
+          name: `In Progress (${inProgressTasks?.length})`,
+          item: inProgressTasks,
+        },
+      ];
+    if (selectedFilter === "done")
+      return [{ name: `Done (${doneTasks?.length})`, item: doneTasks }];
+    // If 'all', return all
+    return [
+      { name: `To do (${todoTasks?.length})`, item: todoTasks },
+      {
+        name: `In Progress (${inProgressTasks?.length})`,
+        item: inProgressTasks,
+      },
+      { name: `Done (${doneTasks?.length})`, item: doneTasks },
+    ];
+  };
+
   const router = useRouter();
 
   // useEffect(() => {
@@ -42,42 +87,26 @@ export default function Home() {
   if (!checkedAuth || !isLoggedIn) return <Loader />;
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between overflow-hidden">
       <SideBar />
       <main className="grow flex min-h-screen  items-center justify-between bg-white">
         <Projects />
-        <div className="bg-[#f5f5f5] shadow-inner dark:bg-[#2A2B2F] grow h-screen  py-4 md:py-5 px-7">
+        <div className="bg-[#f5f5f5] flex flex-col shadow-inner mx-auto dark:bg-[#2A2B2F] grow h-screen  py-4 md:py-5 px-7">
           <TopBar />
 
           <MenuBar />
+          <div
+            // className="space-y-3 py-3 sm:columns-2 sm:gap-2 md:columns-4">
+            className="grid grid-cols-3 gap-3 pt-5 text-theme grow overflow-hidden"
+          >
+            {getFilteredTasks().map((group) => (
+              <ProjectList
+                key={group.name}
+                name={group.name}
+                items={group.item}
+              />
+            ))}
 
-          <div className="grid grid-cols-3 pt-5 text-theme">
-            <div className="flex flex-col gap-3 border border-dashed dark:border-0 rounded-lg bg-[#FFFFFF] dark:bg-[#24262c] p-2">
-              <div className="flex-between mt-3 text-sm">
-                <h3>To do</h3>
-                <AddBtn title="Add new task" iconSize={10} onClick={() => {}} />
-              </div>
-
-              <div className="border flex flex-col gap-2 rounded-lg dark:border-0 dark:bg-[#292b31] p-2.5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-base text-theme">
-                      Design new ui presentation
-                    </h3>
-                    <p className="text-sm text-theme-inactive">
-                      Dribble marketing
-                    </p>
-                  </div>
-
-                  <MoreBtn />
-                </div>
-
-                <ProgressBar value={67} />
-
-                <div className="flex-between"></div>
-              </div>
-              
-            </div>
           </div>
         </div>
       </main>

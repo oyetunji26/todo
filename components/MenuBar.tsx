@@ -3,30 +3,47 @@ import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { MdOutlineViewAgenda } from "react-icons/md";
 import AddBtn from "./Ui/AddBtn";
+import { useModalStore, useProjectStore } from "@/store";
+import CreateTaskForm from "./projects/CreateTask";
 
 const MenuBar = () => {
   const [active, setActive] = useState<number>(1);
   const [isFilter, setIsFilter] = useState<boolean>(true);
   const [isSort, setIsSort] = useState<boolean>(false);
+
+  const { openModal, closeModal } = useModalStore();
+  const { activeProject } = useProjectStore();
+
   return (
     <div className="flex items-center justify-between mt-10 pb-4 border-b-[2px] border-theme ">
       <div className="flex gap-6">
         <button
           className={`flex-center gap-1.5 ${
-            active == 0
-              ? "text-theme  border-theme"
-              : "text-theme-inactive"
+            active == 0 ? "text-theme  border-theme" : "text-theme-inactive"
           }`}
-          onClick={() => setActive(0)}
+          onClick={() => {
+            setActive(0);
+          }}
         >
           <MdOutlineViewAgenda /> Board View
         </button>
 
-        <AddBtn title="Add new" classes={`${
-            active == 1
-              ? "text-theme  border-theme"
-              : "text-theme-inactive"
-          }`} onClick={() => setActive(1)}/>
+        <AddBtn
+          title="Add new"
+          classes={`${
+            active == 1 ? "text-theme  border-theme" : "text-theme-inactive"
+          }`}
+          onClick={() =>
+            activeProject
+              ? openModal(
+                  <CreateTaskForm
+                    project={activeProject}
+                    onSuccess={() => closeModal()}
+                  />
+                )
+              : openModal(<CreateTaskForm onSuccess={() => closeModal()} />)
+          }
+        />
 
         {/* <button
           className={`flex-center gap-1.5 ${

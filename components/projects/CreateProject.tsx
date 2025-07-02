@@ -3,6 +3,8 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
+import { showSuccess, showError, showToastPromise } from "@/utils/toast";
+
 
 interface CreateProjectFormProps {
   userId?: string; // pass current logged-in user's ID
@@ -24,36 +26,43 @@ export default function CreateProjectForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
-
-    try {
+  
+    const payload = {
+      title,
+      description,
+      owner: user?.id,
+      team: teamId,
+    };
+  
+    const createProject = async () => {
       const res = await fetch("/api/projects", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          owner: user?.id,
-          team: teamId,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-
+  
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(text || res.statusText || "Failed to create project.");
+        throw new Error(text || "Failed to create project.");
       }
-
-      setTitle("");
-      setDescription("");
-      if (onSuccess) onSuccess();
-    } catch (err: any) {
-      setError(err.message || "Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
+  
+      return res.json();
+    };
+  
+    showToastPromise(createProject(), {
+      loading: "Creating project...",
+      success: "Project created successfully!",
+      error: "Failed to create project.",
+    })
+      .then(() => {
+        setTitle("");
+        setDescription("");
+        onSuccess?.();
+      })
+      .catch((err : any) => {
+        setError(err.message || "Something went wrong.");
+      });
   };
 
   return (
