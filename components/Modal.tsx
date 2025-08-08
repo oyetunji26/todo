@@ -30,7 +30,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
           {/* &times; */}
           <FiX size={22} className="text-theme" />
         </button>
-        {children}
+        {children} gf
       </div>
     </div>
   );
